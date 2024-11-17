@@ -6,10 +6,12 @@ import requests
 from io import BytesIO
 import time
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 # Загрузка модели для определения природных явлений
 model_recognition = models.resnet18(pretrained=False)
 model_recognition.fc = torch.nn.Linear(model_recognition.fc.in_features, 11) 
-model_recognition.load_state_dict(torch.load('models/model_resnet18.pth'))
+model_recognition.load_state_dict(torch.load('models/model_resnet18.pth', map_location=device))
 model_recognition.eval()
 
 # Список названий классов

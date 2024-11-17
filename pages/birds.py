@@ -5,13 +5,16 @@ from PIL import Image
 import requests
 from io import BytesIO
 import time
+from models.custom_densenet import MyDenseNet  # Импорт класса из файла
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Загрузка модели для определения птичек
-model_birds = models.densenet121(pretrained=False)
-model_birds.classifier = torch.nn.Linear(model_birds.classifier.in_features, 200)
-checkpoint = torch.load('models/model_desnet121.pth')
+model_birds = MyDenseNet(num_classes=200, pretrained=False)
+checkpoint = torch.load('models/model_desnet121.pth', map_location=device)
 model_birds.load_state_dict(checkpoint, strict=False)
 model_birds.eval()
+
 
 # Загрузка названий птичек
 with open('models/birds_name.txt', 'r') as file:
